@@ -9,7 +9,6 @@ np.random.seed(0)
 #h = np.random.uniform(0.0,1.0)	# habituation parameter
 
 
-
 class Individual:
 	def __init__(self, r):
 		#self.role = r			# 0 = Dictator / 1 = Recipient, control variable, not used yet
@@ -222,17 +221,15 @@ class PairEnvironment:
 
 
 
-
-
 #########################################################################
 #########################################################################
 ###########                DETERMINISTIC MODEL                ###########
 #########################################################################
 #########################################################################
-
 '''
-l = [0.2, 0.4, 0.6, 0.8]
-h = [0.2, 0.4, 0.6, 0.8]
+
+l = [0.2]#, 0.4, 0.6, 0.8]
+h = [0.2]#, 0.4, 0.6, 0.8]
 spd = 1
 spa = 1
 for learn in l:
@@ -284,6 +281,44 @@ for learn in l:
 
 			### We go to STEP 1 again ###
 
+########################################################
+#########  Donation and aspiration evolution  ##########
+#########       for a random individual       ##########
+########################################################
+
+
+randomp = random.randint(0, 500) + 6
+donationsd = pairs[randomp].dictator.my_donations
+aspirationsd = pairs[randomp].dictator.my_aspirations
+plt.figure(1)
+plt.subplot(1, 1, 1)
+plt.plot(list(range(IT)), donationsd)
+plt.plot(list(range(IT)), aspirationsd)
+plt.axis([0, IT, 0, 1])
+plt.legend(['donations', 'aspirations'])
+plt.text(IT*0.75, 0.76,'l = 0.2\nh = 0.2',
+			{'color': 'b', 'fontsize': 'medium',
+			'bbox': dict(boxstyle="square", fc="white", ec="black", pad=0.25, alpha=0.5)}, family='monospace')	
+plt.title("Donation and aspiration values evolution for a random individual", size='medium')
+plt.show()
+
+########################################################
+############    Donation and aspiration    #############
+############         mean evolution        #############
+########################################################
+
+plt.figure(2)
+plt.subplot(1, 1, 1)
+plt.plot(list(range(IT)), deterministic_donations)
+plt.plot(list(range(IT)), deterministic_aspirations)
+plt.axis([0, IT, 0, 1])
+plt.legend(['donations', 'aspirations'])
+plt.text(IT*0.75, 0.76,'l = 0.2\nh = 0.2',
+			{'color': 'b', 'fontsize': 'medium',
+			'bbox': dict(boxstyle="square", fc="white", ec="black", pad=0.25, alpha=0.5)}, family='monospace')	
+plt.title("Evolution of mean of donations and aspirations", size='medium')
+plt.show()
+
 
 ########################################################
 ##########      Donation mean evolution      ###########
@@ -319,16 +354,16 @@ for learn in l:
 		
 
 plt.show()
-
-
+'''
+'''
 #########################################################################
 #########################################################################
 #############               STOCHASTIC MODEL                #############
 #########################################################################
 #########################################################################
 
-l = [0.2, 0.4, 0.6, 0.8]
-h = [0.2, 0.4, 0.6, 0.8]
+l = [0.2]#, 0.4, 0.6, 0.8]
+h = [0.2]#, 0.4, 0.6, 0.8]
 spd = 1
 spa = 1
 for learn in l:
@@ -383,7 +418,45 @@ for learn in l:
 
 			### We go to STEP 1 again ###
 
+########################################################
+#########  Donation and aspiration evolution  ##########
+#########       for a random individual       ##########
+########################################################
 
+
+randomp = random.randint(0, 500) + 6
+donationsd = pairs[randomp].dictator.my_donations
+aspirationsd = pairs[randomp].dictator.my_aspirations
+plt.figure(1)
+plt.subplot(1, 1, 1)
+plt.plot(list(range(IT)), donationsd)
+plt.plot(list(range(IT)), aspirationsd)
+plt.axis([0, IT, 0, 1])
+plt.legend(['donations', 'aspirations'])
+plt.text(IT*0.75, 0.76,'l = 0.2\nh = 0.2',
+			{'color': 'b', 'fontsize': 'medium',
+			'bbox': dict(boxstyle="square", fc="white", ec="black", pad=0.25, alpha=0.5)}, family='monospace')	
+plt.title("Donation and aspiration values evolution for a random individual\nStochastic model: \u03B5=0.01", size='medium')
+plt.show()
+
+########################################################
+############    Donation and aspiration    #############
+############         mean evolution        #############
+########################################################
+
+plt.figure(2)
+plt.subplot(1, 1, 1)
+plt.plot(list(range(IT)), stochastic_donations)
+plt.plot(list(range(IT)), stochastic_aspirations)
+plt.axis([0, IT, 0, 1])
+plt.legend(['donations', 'aspirations'])
+plt.text(IT*0.75, 0.76,'l = 0.2\nh = 0.2',
+			{'color': 'b', 'fontsize': 'medium',
+			'bbox': dict(boxstyle="square", fc="white", ec="black", pad=0.25, alpha=0.5)}, family='monospace')	
+plt.title("Evolution of mean of donations and aspirations\nStochastic model: \u03B5=0.01", size='medium')
+plt.show()
+'''
+'''
 ########################################################
 ##########      Donation mean evolution      ###########
 ########################################################
@@ -419,8 +492,8 @@ for learn in l:
 
 plt.show()
 
-'''
 
+'''
 #########################################################################
 #########################################################################
 ####      MODEL EXTENSION: ENVIOUS INDIVIDUALS AND FREE_RIDERS       ####
@@ -428,25 +501,25 @@ plt.show()
 #########################################################################
 
 
-l = [0.2, 0.4, 0.6, 0.8]	# learning rate
-h = [0.2, 0.4, 0.6, 0.8]	# habituation parameter
+l = [0.2]#, 0.4, 0.6, 0.8]	# learning rate
+h = [0.2]#], 0.4, 0.6, 0.8]	# habituation parameter
 spd = 1
 spa = 1
 for learn in l:
 	for habit in h:
 		### Creating an environment with N pairs of individuals ###
-		M = 100		# number of iterations
+		M = 50		# number of iterations
 		IT = M 			# auxiliar value
 		N = 500			# number of pairs
 		epsilon = 0.1	# trembling hand
 		pairs = []		# list of pairs
-		fr = 50			# number of free-riders
+		fr = 0			# number of free-riders
 
 		for i in range(N):
 			pairs.append(PairEnvironment())
 		envious_donations = []		# List with all the donations for stochastic model
 		envious_aspirations = []	# List with all the aspirations for stochastic model
-		envious_prob = 0.05			# probability of being envious
+		envious_prob = 0.2			# probability of being envious
 
 
 		## Changing the individuals making them have a probability of being envious ##
@@ -513,7 +586,46 @@ for learn in l:
 			M -= 1
 
 	### We go to STEP 1 again ###
+########################################################
+#########  Donation and aspiration evolution  ##########
+#########       for a random individual       ##########
+########################################################
 
+
+randomp = random.randint(0, 500) + 6
+donationsd = pairs[randomp].dictator.my_donations
+aspirationsd = pairs[randomp].dictator.my_aspirations
+plt.figure(1)
+plt.subplot(1, 1, 1)
+plt.plot(list(range(IT)), donationsd)
+plt.plot(list(range(IT)), aspirationsd)
+plt.axis([0, IT, 0, 1])
+plt.legend(['donations', 'aspirations'])
+plt.text(IT*0.75, 0.76,'l = 0.2\nh = 0.2',
+			{'color': 'b', 'fontsize': 'medium',
+			'bbox': dict(boxstyle="square", fc="white", ec="black", pad=0.25, alpha=0.5)}, family='monospace')	
+plt.title("Donation and aspiration values evolution for a random individual\nModel extension: envious individuals", size='medium')
+plt.show()
+
+########################################################
+############    Donation and aspiration    #############
+############         mean evolution        #############
+########################################################
+
+plt.figure(2)
+plt.subplot(1, 1, 1)
+plt.plot(list(range(IT)), envious_donations)
+plt.plot(list(range(IT)), envious_aspirations)
+plt.axis([0, IT, 0, 1])
+plt.legend(['donations', 'aspirations'])
+plt.text(IT*0.75, 0.76,'l = 0.2\nh = 0.2',
+			{'color': 'b', 'fontsize': 'medium',
+			'bbox': dict(boxstyle="square", fc="white", ec="black", pad=0.25, alpha=0.5)}, family='monospace')	
+plt.title("Evolution of mean of donations and aspirations\nModel extension: envious individuals", size='medium')
+plt.show()
+
+
+'''
 ########################################################
 ##########      Donation mean evolution      ###########
 ########################################################
@@ -550,92 +662,6 @@ for learn in l:
 plt.show()
 
 
-'''
-for p in pairs:
-	plt.figure(7)
-	plt.plot(list(range(IT)), p.recipient.my_donations)
-	plt.axis([0, IT, 0, 1])
-	plt.title("All recipients donations")
-	plt.xlabel("Iterations")
-	plt.ylabel("Donations")
-plt.savefig("/Users/marina/Documents/UPF/Master/2/SDIC/RL/proyecto/deterministic/r_don_total.png")
-plt.close()
-
-for p in pairs:
-	plt.figure(8)
-	plt.plot(list(range(IT)), p.recipient.my_aspirations)
-	plt.axis([0, IT, 0, 1])
-	plt.title("All recipients aspirations")
-	plt.xlabel("Iterations")
-	plt.ylabel("Aspirations")
-plt.savefig("/Users/marina/Documents/UPF/Master/2/SDIC/RL/proyecto/deterministic/r_asp_total.png")
-plt.close()
-'''
-
-
-''' Checking donations and swap '''
-'''print("*** State previous to the donation ***")
-e = PairEnvironment()
-e.get_state()
-e.make_donation()
-print("Donation made")
-print("*** State back to the donation ***")	
-e.get_state()
-e.swap_roles()
-print("*** State previous to the donation ***")
-e.get_state()
-e.make_donation()
-print("Donation made")
-print("*** State back to the donation ***")	
-e.get_state()
-e.swap_roles()
-print("*** State previous to the donation ***")
-e.get_state()
-e.make_donation()
-print("Donation made")
-print("*** State back to the donation ***")	
-e.get_state()'''
-
-''' Checking individuals exchange '''
-'''
-print(pairs)
-print("*** State previous to the exchange ***")
-e1 = PairEnvironment()
-print("* e1:")
-e1.get_state()
-print("* e2:")
-e2 = PairEnvironment()
-e2.get_state()
-print("*** State back to the exchange ***")
-e1.ind_exchange(e2)
-print("* e1:")
-e1.get_state()
-print("* e2:")
-e2.get_state()'''
-
-
-
-'''
-NEGATIVE ASPIRATION??? (payoff initialized to 0)
-
-ITERATION  2
-*** State previous to the donation ***
-dictator donation =  0.4298710027277891
-recipient donation =  0.12718356204432146
-dictator aspiration =  0.45636807828406056
-recipient aspiration =  0.8728164379556785
-dictator payoff =  0.45490537294224387
-recipient payoff =  0.9442259488448976
---------stimuli =  -3.482725504051616
-Donation made
-*** State back to the donation ***
-dictator donation =  0.4474305646836651
-recipient donation =  0.3394940305089121
-dictator aspiration =  0.45636807828406056
-recipient aspiration =  -1.9123120425744171
-dictator payoff =  0.45490537294224387
-recipient payoff =  0.4298710027277891
--------------------------------------
 '''
 
 
