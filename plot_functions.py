@@ -1,11 +1,11 @@
 import matplotlib.pyplot as plt
 
 
-def means_evolution(nfig, l, h, learn, habit, sp, M, deterministic_donations, deterministic_aspirations, model, epsilon=0.0, envious_prob=0.0, fr=0):
+def means_evolution(nfig, l, h, learn, habit, sp, M, donations, aspirations, model, epsilon=0.0, envious_prob=0.0, fr=0):
 	plt.figure(nfig, figsize=[15,10])
 	plt.subplot(len(l), len(h), sp)
-	plt.plot(list(range(M)), deterministic_donations, label='donations')
-	plt.plot(list(range(M)), deterministic_aspirations, label='aspirations')
+	plt.plot(list(range(M)), donations, label='donations')
+	plt.plot(list(range(M)), aspirations, label='aspirations')
 	plt.axis([0, M, 0, 1])
 	plt.xticks(fontsize='small')
 	plt.yticks(fontsize='small')

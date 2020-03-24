@@ -2,17 +2,16 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 
-end = 1.0						# endowment
+end = 1.0	# endowment
 random.seed(0)
 np.random.seed(0)
 
 
 class Individual:
 	def __init__(self, r):
-		#self.role = r			# 0 = Dictator / 1 = Recipient, control variable, not used yet
 		self.asp = np.random.uniform(0.0,1.0)
 		self.don = end - self.asp
-		self.payoff = self.asp 	# ????
+		self.payoff = 0.0 #self.asp
 		self.my_donations = []
 		self.my_aspirations = []
 		self.envious = False
@@ -31,10 +30,11 @@ class Individual:
 	def update_role(self, r):
 		self.r = r
 
+
 	### Recipient methods ###
 
 	def stimuli(self, d, a):
-		s = (d - self.asp) # / (end - a) if end != a else 0		## ERROR? no need to normalization
+		s = (d - self.asp) # / (end - a) if end != a else 0
 		return s
 
 	def update_asp(self, s, l):
@@ -44,6 +44,7 @@ class Individual:
 
 	def update_payoff(self, don):
 		self.payoff = don
+
 
 	### Dictator methods ###
 
@@ -123,12 +124,11 @@ class PairEnvironment:
 		# we get the donation from the dictator:
 		donation = self.dictator.donation()
 		# we compute the stimuli and update the aspiration for the recipient:
-		#print("####### stimuli = ", self.recipient.stimuli(donation, self.dictator.asp))
 		self.recipient.update_asp(self.recipient.stimuli(donation, self.dictator.asp), l)
 		# we update the payoff for the recipient:
 		self.recipient.update_payoff(donation)
-		# we compute the next donation for the dictator:
-		#self.dictator.calculate_don()
+		# we don't compute the next donation for the dictator, just recipient's donation is computed in every iteration
+		# self.dictator.calculate_don()
 		# we compute the next donation for the recipient:
 		self.recipient.calculate_don(h)
 
@@ -137,11 +137,10 @@ class PairEnvironment:
 		# we get the donation from the dictator:
 		donation = self.dictator.donation()
 		# we compute the stimuli and update the aspiration for the recipient:
-		#print("####### stimuli = ", self.recipient.stimuli(donation, self.dictator.asp))
 		self.recipient.update_asp(self.recipient.stimuli(donation, self.dictator.asp), l)
 		# we update the payoff for the recipient:
 		self.recipient.update_payoff(donation)
-		# we compute the next donation for the dictator:
+		# we don't compute the next donation for the dictator, just recipient's donation is computed in every iteration
 		#self.dictator.calculate_don()
 		# we compute the next donation for the recipient:
 		self.recipient.calculate_stoch_don(h, ep)
@@ -151,11 +150,10 @@ class PairEnvironment:
 		# we get the donation from the dictator:
 		donation = self.dictator.donation()
 		# we compute the stimuli and update the aspiration for the recipient:
-		#print("####### stimuli = ", self.recipient.stimuli(donation, self.dictator.asp))
 		self.recipient.update_asp(self.recipient.stimuli(donation, self.dictator.asp), l)
 		# we update the payoff for the recipient:
 		self.recipient.update_payoff(donation)
-		# we compute the next donation for the dictator:
+		# we don't compute the next donation for the dictator, just recipient's donation is computed in every iteration
 		#self.dictator.calculate_don()
 		# we compute the next donation for the recipient:
 		self.recipient.calculate_envious_don(h, ep)
@@ -165,11 +163,10 @@ class PairEnvironment:
 		# we get the donation from the dictator:
 		donation = 0.0
 		# we compute the stimuli and update the aspiration for the recipient:
-		#print("####### stimuli = ", self.recipient.stimuli(donation, self.dictator.asp))
 		self.recipient.update_asp(self.recipient.stimuli(donation, self.dictator.asp), l)
 		# we update the payoff for the recipient:
 		self.recipient.update_payoff(donation)
-		# the dictator does not update its donation (?):
+		# we don't compute the next donation for the dictator, just recipient's donation is computed in every iteration
 		#self.dictator.calculate_don()
 		# we compute the next donation for the recipient:
 		self.recipient.don = 0.0
@@ -177,28 +174,9 @@ class PairEnvironment:
 
 	def swap_roles(self):
 		if np.random.randint(0,2):
-			'''if(self.is_free_rider()):
-				fr = True 
-				print(" >> Roles swapped")
-				print("dictator donation = ", self.dictator.don)
-				print("recipient donation = ", self.recipient.don)
-				print("dictator aspiration = ", self.dictator.asp)
-				print("recipient aspiration = ", self.recipient.asp)
-			else:
-				fr = False'''
-
 			self.dictator.features_exchange(self.recipient)
-			#self.dictator, self.recipient = self.recipient, self.dictator 
-			'''
-			if fr:
-				print("- - - - -")
-				print("dictator donation = ", self.dictator.don)
-				print("recipient donation = ", self.recipient.don)
-				print("dictator aspiration = ", self.dictator.asp)
-				print("recipient aspiration = ", self.recipient.asp)'''
 		else:
 			0
-			#print(" > Roles stay equal")
 
 
 	def get_state(self, b):
@@ -214,14 +192,8 @@ class PairEnvironment:
 
 	def ind_exchange(self, e):
 		if np.random.randint(0,2):
-			self.recipient.features_exchange(e.recipient) 
-			'''r = self.recipient
-			self.recipient = e.recipient
-			e.recipient = r'''
+			self.recipient.features_exchange(e.recipient)
 		else:
 			self.dictator.features_exchange(e.dictator)
-			'''d = self.dictator
-			self.dictator = e.dictator
-			e.dictator = d'''
 		e.swap_roles()
 		self.swap_roles()

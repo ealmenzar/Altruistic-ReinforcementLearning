@@ -7,6 +7,7 @@ def create_pairs(N, randomp):
 	pairs = []
 	for i in range(N):
 		pairs.append(PairEnvironment())
+		# We set the random individual chosen to compare different results obtained from different models
 		if( i == randomp ):
 			pairs[i].set_random_ind(True)
 	return pairs
@@ -20,24 +21,29 @@ def create_pairs(N, randomp):
 
 
 def deterministic(learn, habit, M, N, pairs):
-	deterministic_donations = []	# List with all the donations for deterministic model
-	deterministic_aspirations = []	# List with all the aspirations for deterministic model
+	deterministic_donations = []	# List with all the means of the donations for deterministic model
+	deterministic_aspirations = []	# List with all the means of the aspirations for deterministic model
 	while( M > 0 ):
-		don_mean = 0.0
-		asp_mean = 0.0
+		don_mean = 0.0	# in every iteration we calculate the mean of all the donations
+		asp_mean = 0.0	# in every iteration we calculate the mean of all the aspirations
 
 		### STEP 1. Each pair make the donation ###
 		for p in pairs:
 			don_d, asp_d, don_r, asp_r = p.get_state(False)
-			p.dictator.my_donations.append(don_d)		# me interesa la evolución de cada individuo de cada pareja así que todo esto lo guardo
-			p.dictator.my_aspirations.append(asp_d)		# idem
-			p.recipient.my_donations.append(don_r)		# idem
-			p.recipient.my_aspirations.append(asp_r)	# idem
+			# Keeping the evolution of every individual of every pair
+			p.dictator.my_donations.append(don_d)		
+			p.dictator.my_aspirations.append(asp_d)
+			p.recipient.my_donations.append(don_r)
+			p.recipient.my_aspirations.append(asp_r)
 			don_mean += don_r
 			asp_mean += asp_r
+			# Making the donation, current recipient's attributes are updated
 			p.make_donation(learn, habit)
-		deterministic_donations.append(don_mean / N)		# todas las donaciones (en cada make_donation() sólo se actualiza la donación del recipient)
-		deterministic_aspirations.append(asp_mean / N)		# todas las aspiraciones (en cada make_donation() sólo se actualiza la aspiración del recipient)
+
+		# Keeping the mean of the donations in this iteration
+		deterministic_donations.append(don_mean / N)
+		# Keeping the mean of the aspirations in this iteration
+		deterministic_aspirations.append(asp_mean / N)	
 
 		### STEP 2. Shuffling the pairs and swapping the roles (inside ind_exchange) randomly ###
 		exchanges = random.sample(range(N), N)
@@ -68,26 +74,31 @@ def deterministic(learn, habit, M, N, pairs):
 #########################################################################
 
 def stochastic(learn, habit, M, N, pairs, epsilon):
-	stochastic_donations = []	# List with all the donations for stochastic model
-	stochastic_aspirations = []	# List with all the aspirations for stochastic model
+	stochastic_donations = []	# List with all the means of the donations for stochastic model
+	stochastic_aspirations = []	# List with all the means of the aspirations for stochastic model
 
 	while( M > 0 ):
-		don_mean = 0.0
-		asp_mean = 0.0
+		don_mean = 0.0	# in every iteration we calculate the mean of all the donations
+		asp_mean = 0.0	# in every iteration we calculate the mean of all the aspirations
 
 		### STEP 1. Each pair make the donation ###
         
 		for p in pairs:
 			don_d, asp_d, don_r, asp_r = p.get_state(False)
-			p.dictator.my_donations.append(don_d)		# me interesa la evolución de cada individuo de cada pareja así que todo esto lo guardo
-			p.dictator.my_aspirations.append(asp_d)		# idem
-			p.recipient.my_donations.append(don_r)		# idem
-			p.recipient.my_aspirations.append(asp_r)	# idem
+			# Keeping the evolution of every individual of every pair 
+			p.dictator.my_donations.append(don_d)
+			p.dictator.my_aspirations.append(asp_d)
+			p.recipient.my_donations.append(don_r)
+			p.recipient.my_aspirations.append(asp_r)
 			don_mean += don_r
 			asp_mean += asp_r
+			# Making the donation, current recipient's attributes are updated
 			p.make_stoch_donation(learn, habit, epsilon)
-		stochastic_donations.append(don_mean / N)		# todas las donaciones (en cada make_donation() sólo se actualiza la donación del recipient)
-		stochastic_aspirations.append(asp_mean / N)		# todas las aspiraciones (en cada make_donation() sólo se actualiza la aspiración del recipient)
+
+		# Keeping the mean of the donations in this iteration 
+		stochastic_donations.append(don_mean / N)
+		# Keeping the mean of the aspirations in this iteration
+		stochastic_aspirations.append(asp_mean / N)	
 
 		### STEP 2. Shuffling the pairs and swapping the roles (inside ind_exchange) randomly ###
 		exchanges = random.sample(range(N), N)
@@ -121,8 +132,8 @@ def stochastic(learn, habit, M, N, pairs, epsilon):
 
 
 def extension(learn, habit, M, N, pairs, epsilon, envious_prob, fr):
-	extension_donations = []		# List with all the donations for stochastic model
-	extension_aspirations = []	# List with all the aspirations for stochastic model
+	extension_donations = []		# List with all the means of the donations for the model extensions
+	extension_aspirations = []		# List with all the means of the aspirations for model extensions
 
 
 	## Changing the individuals making them have a probability of being envious ##
@@ -132,13 +143,13 @@ def extension(learn, habit, M, N, pairs, epsilon, envious_prob, fr):
 		if env:
 			p.set_envious(True)
 
-	## Changing the individuals making them have a concrete number of free-riders ##
+	## Changing the individuals in order to have a concrete number of free-riders ##
 	free_rider = []
 	for i in range(fr):
 		free_rider.append(random.randint(0, N-1))
 
 	for i in free_rider:
-		pairs[i].set_free_rider(True) # IndexError: list index out of range !!
+		pairs[i].set_free_rider(True) 
 
 
 	while( M > 0 ):
@@ -148,12 +159,14 @@ def extension(learn, habit, M, N, pairs, epsilon, envious_prob, fr):
 		### STEP 1. Each pair make the donation ###
 		for p in pairs:
 			don_d, asp_d, don_r, asp_r = p.get_state(False)
-			p.dictator.my_donations.append(don_d)		# me interesa la evolución de cada individuo de cada pareja así que todo esto lo guardo
-			p.dictator.my_aspirations.append(asp_d)		# idem
-			p.recipient.my_donations.append(don_r)		# idem
-			p.recipient.my_aspirations.append(asp_r)	# idem
+			# Keeping the evolution of every individual of every pair 
+			p.dictator.my_donations.append(don_d)
+			p.dictator.my_aspirations.append(asp_d)
+			p.recipient.my_donations.append(don_r)
+			p.recipient.my_aspirations.append(asp_r)
 			don_mean += don_r
 			asp_mean += asp_r
+
 			## if the dictator is a free-rider, make a free-rider donation ##
 			if p.is_free_rider():
 				p.make_freerider_donation(learn, habit, epsilon)
@@ -165,8 +178,10 @@ def extension(learn, habit, M, N, pairs, epsilon, envious_prob, fr):
 				else:
 					p.make_stoch_donation(learn, habit, epsilon)
 
-		extension_donations.append(don_mean / N)		# todas las donaciones (en cada make_donation() sólo se actualiza la donación del recipient)
-		extension_aspirations.append(asp_mean / N)		# todas las aspiraciones (en cada make_donation() sólo se actualiza la aspiración del recipient)
+		# Keeping the mean of the donations in this iteration 
+		extension_donations.append(don_mean / N)
+		# Keeping the mean of the aspirations in this iteration 		
+		extension_aspirations.append(asp_mean / N)
 
 		### STEP 2. Shuffling the pairs and swapping the roles (inside ind_exchange) randomly ###
 		exchanges = random.sample(range(N), N)
