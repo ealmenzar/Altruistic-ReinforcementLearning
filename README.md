@@ -7,4 +7,4 @@ function. In the Dictator game (DG), people expect generous behavior from others
 of the pie. Here we assume that people donate following their expectations, and that they update their expectations after 
 playing a DG by reinforcement learning to construct a model that explains the main experimental results in the DG.
 
-https://mybinder.org/v2/gh/ealmenzar/Altruistic-ReinforcementLearning/master?filepath=altruism.ipynb
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ealmenzar/Altruistic-ReinforcementLearning/master?filepath=altruism.ipynb)
