@@ -3,8 +3,6 @@ import random
 import matplotlib.pyplot as plt
 
 end = 1.0	# endowment
-random.seed(0)
-np.random.seed(0)
 
 
 class Individual:
