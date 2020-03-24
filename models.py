@@ -1,5 +1,6 @@
 import numpy as np
 import random
+from environment import Individual, PairEnvironment
 
 
 def create_pairs(N, randomp):
